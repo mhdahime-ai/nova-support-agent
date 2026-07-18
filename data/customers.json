@@ -1,0 +1,37 @@
+{
+  "customers": [
+    {
+      "id": "CUST-1001",
+      "name": "Priya Nair",
+      "email": "priya.nair@example.com",
+      "plan": "Pro",
+      "status": "active",
+      "signup_date": "2025-02-14",
+      "last_payment": "2026-07-01",
+      "open_tickets": 0,
+      "notes": "Upgraded from Basic to Pro in June 2026."
+    },
+    {
+      "id": "CUST-1002",
+      "name": "James Whitfield",
+      "email": "james.whitfield@example.com",
+      "plan": "Basic",
+      "status": "active",
+      "signup_date": "2024-11-02",
+      "last_payment": "2026-06-28",
+      "open_tickets": 1,
+      "notes": "Reported slow dashboard loading on 2026-07-10, ticket still open."
+    },
+    {
+      "id": "CUST-1003",
+      "name": "Amara Okafor",
+      "email": "amara.okafor@example.com",
+      "plan": "Enterprise",
+      "status": "past_due",
+      "signup_date": "2023-05-19",
+      "last_payment": "2026-05-15",
+      "open_tickets": 0,
+      "notes": "Payment failed on last billing cycle, card expired."
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nova Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12181B;
+    --panel: #1C242A;
+    --panel-raised: #212B31;
+    --border: #2A343A;
+    --text: #E7ECEE;
+    --text-muted: #8B9AA0;
+    --teal: #5EEAD4;
+    --amber: #F59E0B;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+  }
+  .shell {
+    max-width: 640px;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mark {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--teal), #22B8A0);
+    flex-shrink: 0;
+  }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  header p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #thread {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .msg {
+    max-width: 82%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .msg.user {
+    align-self: flex-end;
+    background: var(--teal);
+    color: #06201B;
+    border-bottom-right-radius: 3px;
+  }
+  .msg.agent {
+    align-self: flex-start;
+    background: var(--panel-raised);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 3px;
+  }
+  .status-pill {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--amber);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+  .status-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--amber);
+  }
+  .typing {
+    align-self: flex-start;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 14px;
+  }
+  form {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px 22px;
+    border-top: 1px solid var(--border);
+  }
+  input[type=text] {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14.5px;
+    font-family: 'Inter', sans-serif;
+  }
+  input[type=text]:focus {
+    outline: none;
+    border-color: var(--teal);
+  }
+  button {
+    background: var(--teal);
+    color: #06201B;
+    border: none;
+    border-radius: 10px;
+    padding: 0 20px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 20px 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="mark"></div>
+      <div>
+        <h1>Nova Support</h1>
+        <p>agent online · avg reply &lt; 5s</p>
+      </div>
+    </header>
+    <div id="thread">
+      <div class="msg agent">Hi, I'm the Nova support agent. Ask me anything about your account, billing, or how something works — and if I can't sort it out, I'll pull in a human for you.</div>
+    </div>
+    <div class="hint">Try: "I'm james.whitfield@example.com, why is my dashboard slow?" or "I want a refund"</div>
+    <form id="chat-form">
+      <input type="text" id="input" placeholder="Type your message..." autocomplete="off" />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+<script>
+  const thread = document.getElementById('thread');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send-btn');
+  let sessionId = null;
+
+  function addMessage(text, cls) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + cls;
+    div.textContent = text;
+    thread.appendChild(div);
+    thread.scrollTop = thread.scrollHeight;
+    return div;
+  }
+
+  function addStatusPill(text) {
+    const div = document.createElement('div');
+    div.className = 'status-pill';
+    div.textContent = text;
+    thread.appendChild(div);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+    addMessage(message, 'user');
+    input.value = '';
+    sendBtn.disabled = true;
+
+    const typing = document.createElement('div');
+    typing.className = 'typing';
+    typing.textContent = 'agent is typing...';
+    thread.appendChild(typing);
+    thread.scrollTop = thread.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, session_id: sessionId }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.error) {
+        addMessage('Something went wrong on our end: ' + data.error, 'agent');
+      } else {
+        sessionId = data.session_id;
+        addMessage(data.reply, 'agent');
+        if (data.escalated) {
+          addStatusPill('Escalated to a human · case #' + data.case_id);
+        }
+      }
+    } catch (err) {
+      typing.remove();
+      addMessage('Network error — please try again.', 'agent');
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  });
+</script>
+</body>
+</html>
