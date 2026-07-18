@@ -19,7 +19,7 @@ human when it can't resolve something — logged to a simple dashboard.
 ```bash
 cd support-agent
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=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 # get this from console.anthropic.com
+export ANTHROPIC_API_KEY=sk-ant-api03... # get this from console.anthropic.com
 uvicorn app:app --reload --port 8000
 ```
 
